@@ -8,7 +8,7 @@
     <!-- xml to json converting js file. -->
     <!--script type='text/javascript' src='xml2json.js'></script>  
     <script type='text/javascript' src='libs/ObjTree.js'></script-->
-    <script type="text/javascript" src="./underscore-min.js"></script>
+    <script type="text/javascript" src="./underscore.js"></script>
     <script type="text/javascript" src="./jquery-1.7.1.js"></script>
     <script type="text/javascript" src="./backbone.js"></script>
     <!-- qweb most recommanded file to html templating file. -->
@@ -42,70 +42,26 @@
 
     Apps = Backbone.View.extend({
         template : "main",
-        
-        id : 'body',
-        
-        default:{id:0,title:'testing one',content:'working...working...working...'},
-        
+        id : 'body',        
 		initialize: function(options){
-		    this.rpc = false; 		    
 		    this.records = options.records;
+
 		    this.render();
-		    this.set(this.default);		    
-		},        
+
+		},
+        events: {			
+			"click a[action='add']" : "add",
+			"click a[action='remove']" : "remove",
+		},
 		render: function(){		
 		    var html = QWeb.render("main",{});
 		    this.el.append(html);
 		    
 		},
-		events: {			
-			"click a[action='add']" : "add",
-			"click a[action='remove']" : "remove",
-			"click .list-records > li >a" : "select",
-		},
-		select: function(event){
-//		   console.log("ee", $(event.currentTarget).attr("data-id"))
-		   var searchId = $(event.currentTarget).attr("data-id");
-		   var record = false;		   
-		   record = _.find(this.records,function(rec){ return (rec.id == searchId); });
-		   this.set(record);
-		   console.log("rec",searchId, record);
-		},
-		set:function(vals){		    
-		    if(_.has(vals,'title'))
-		        this.el.find("input[name='title']").val(vals['title']);
-		    if(_.has(vals,'content'))    
-    		    this.el.find("textarea[name='content']").val(vals['content']);	
-		},
-		db_load: function()
-		{
-		    
-		},
-		db_add: function(record){
-		    this.records.push(record);
-		},
 		add: function(event){
 		   // alert('add');
- 		    this.set(this.default);		 
-		    var record = new Object();
-		    record['id'] = _.uniqueId();
-		    record['title'] = this.el.find("input[name='title']").val();
-		    record['content'] = this.el.find("textarea[name='content']").val();		    
-		    this.db_add(record);
-            this.list_add(record);		    
-		   // console.log(this.records);
-		    
-		   // console.log("list-records",this,this.el, this.id, this.tagname);
-
-		},
-		list_add: function(record)
-		{
-		    var a =  $("<a/>");
-		    a.attr("href","#");
-		    a.attr("data-id", record.id);
-		    a.html(record.title + record.id);
-		    console.log(a,a[0]);
-		    this.el.find(".list-records").append($("<li/>").append(a));
+		    console.log("list-records",this,this.el, this.id, this.tagname);
+		    this.el.find(".list-records").append('<li>test 22</li>');
 		},
 		remove: function(){
 		    alert('remove');
@@ -115,7 +71,7 @@
 	});
 	
     $(function(){
-        new Apps({el:$("body"),'records':[]});    
+        new Apps({el:$("body"),'records':[1,2,3,4,5]});    
     });
     	
 </script> 

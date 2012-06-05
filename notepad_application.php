@@ -71,7 +71,7 @@
 	});
 	
     $(function(){
-        new Apps({el:$("body"),'records':[1,2,3,4,5]});    
+        new Apps({el:$("body"),'records':[]});    
     });
     	
 </script> 
