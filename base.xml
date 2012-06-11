@@ -15,6 +15,7 @@
             <table width="100%">
                 <tr>
                     <td>
+                        <input class="field" type="hidden" name="id" size="50" cols="40" style="width:100%;" value="false"/>
                         <input class="field" type="text" name="title" size="50" cols="40" style="width:100%;"/>
                     </td>
                 </tr>                

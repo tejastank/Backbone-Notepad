@@ -30,6 +30,22 @@
          a{
             text-decoration : none;
          }
+         .list-actions{
+            margin-left: -10px;
+         }         
+         .list-records{
+            margin-left: -10px;
+         }
+         .view_list_note li{
+            list-style-type: none;
+            margin-left: -20px;
+            border-top: 1px dotted 
+            gray;
+            margin-right: 10px;
+            background-color: 
+            lightGoldenrodYellow;
+            font-size: 15px;
+         }
     </style>
  
     
@@ -41,22 +57,21 @@
     QWeb.add_template("base.xml"); // LOAD MAIN APPLICATION TEMPLATE
 
     Apps = Backbone.View.extend({
-        template : "main",
-        
-        id : 'body',
-        
-        default:{id:0,title:'testing one',content:'working...working...working...'},
-        
+        template : "main",        
+        id : 'body',        
+        default:{id:0,title:'testing one',content:'working...working...working...'},        
 		initialize: function(options){
 		    this.rpc = false; 		    
 		    this.records = options.records;
+		    this.records = [{id:1,title:'tejas tank',content:'..work .. ...work......'},{id:2,title:'pratik tank',content:'..work .. ...work......'},]
 		    this.render();
-		    this.set(this.default);		    
+		    this.set(this.default);		
+		    this.list_load();    
+		    console.log("note///",this.records);
 		},        
 		render: function(){		
 		    var html = QWeb.render("main",{});
-		    this.el.append(html);
-		    
+		    this.el.append(html);		    
 		},
 		events: {			
 			"click a[action='add']" : "add",
@@ -69,13 +84,26 @@
 		   var record = false;		   
 		   record = _.find(this.records,function(rec){ return (rec.id == searchId); });
 		   this.set(record);
-		   console.log("rec",searchId, record);
+		   //console.log("rec",searchId, record);
 		},
 		set:function(vals){		    
+    		if(_.has(vals,'id'))
+		        this.el.find("input[name='id']").val(vals['id']);
 		    if(_.has(vals,'title'))
 		        this.el.find("input[name='title']").val(vals['title']);
 		    if(_.has(vals,'content'))    
-    		    this.el.find("textarea[name='content']").val(vals['content']);	
+    		    this.el.find("textarea[name='content']").val(vals['content']);
+		},
+		get: function(field){
+            return $(".field[name='"+field+"']")[0].value;
+		},
+		change: function()
+		{
+		    var form;
+		    var form_html = $(".field");
+		    _.each(form_html,function(field){
+               form[field.name] = field.value;
+            });
 		},
 		db_load: function()
 		{
@@ -89,11 +117,11 @@
  		    this.set(this.default);		 
 		    var record = new Object();
 		    record['id'] = _.uniqueId();
-		    record['title'] = this.el.find("input[name='title']").val();
-		    record['content'] = this.el.find("textarea[name='content']").val();		    
+		    record['title'] = this.el.find(".field[name='title']").val();
+		    record['content'] = this.el.find(".field[name='content']").val();		    
 		    this.db_add(record);
-            this.list_add(record);		    
-		   // console.log(this.records);
+            this.list_add(record);
+		    //console.log(this.records);
 		    
 		   // console.log("list-records",this,this.el, this.id, this.tagname);
 
@@ -107,8 +135,15 @@
 		    console.log(a,a[0]);
 		    this.el.find(".list-records").append($("<li/>").append(a));
 		},
+		list_load:function(){
+		    var self = this;
+		    _.each(this.records,function(record){
+		        self.list_add(record);
+		    })  ;
+		},
 		remove: function(){
-		    alert('remove');
+		   // alert('remove', parseInt(this.get('id')));
+		    console.log('remove', parseInt(this.get('id')));
 		},
 		onchange: function(){
 		}
